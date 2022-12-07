@@ -35,7 +35,7 @@ def troll_check(text):
     if "Nilbog" in text:
         raise ThenTheyreGoingToEatMe("Oh my ...")
 
-    text.replace("goblin", "elf").replace("hobgoblin", "orc")
+    return text.replace("hobgoblin", "orc").replace("goblin", "elf")
 
 
 def print_troll_checked(src_fn):
@@ -56,13 +56,14 @@ def print_troll_checked(src_fn):
         print(troll_check(text))
         return 0
 
+    except ThenTheyreGoingToEatMe:
+        print("Looks like a nice place for a vacation!")
+        return -1
+
     except TheyreEatingHer:
         print("We found trolls!")
         return 1
 
-    except ThenTheyreGoingToEatMe:
-        print("Looks like a nice place for a vacation!")
-        return -1
 
 
 def scan_directory(directory, extensions=[], include_defaults=True):
@@ -85,9 +86,10 @@ def scan_directory(directory, extensions=[], include_defaults=True):
 
     for root, dirs, files in os.walk(directory):
         for fn in files:
-            if fn.split(".')[1] in extensions:
-                ret = print_troll_checked(fn)
-            number_of_troll_files += ret
+            text_ext = fn.split(".")[1]
+            if f".{text_ext}" in extensions:
+                ret = print_troll_checked(f"{root}/"+fn)
+                number_of_troll_files += ret
 
     print("Scanning complete. Found %s trolls.", number_of_troll_files)
     return number_of_troll_files
